@@ -1,109 +1,36 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аренда квартир - @yield('title')</title>
-    <style>
-        /* Все общие стили теперь живут здесь! */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f7f6;
-            margin: 0;
-            padding: 0;
-        }
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
-        header {
-            background: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        header a {
-            color: white;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    </head>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100">
+            @include('layouts.navigation')
 
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
+            <!-- Page Heading -->
+            @isset($header)
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endisset
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #888;
-            font-size: 0.9rem;
-            margin-top: 40px;
-        }
-
-        /* Стили для карточек (переносим из index) */
-        .catalog {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .card {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 15px;
-            width: 300px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .card h2 {
-            font-size: 1.2em;
-            margin-top: 0;
-            color: #333;
-        }
-
-        .price {
-            color: #27ae60;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        /* Стили для страницы деталей (переносим из show) */
-        .detail-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-book {
-            display: inline-block;
-            background: #007bff;
-            color: white;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-
-<body>
-    <header>
-        <a href="/">🏠 Мои Квартиры</a>
-    </header>
-
-    <div class="container">
-        {{-- Сюда будет вставляться содержимое каждой страницы --}}
-        @yield('content')
-    </div>
-
-    <footer>
-        &copy; {{ date('Y') }} Бизнес по аренде квартир. Все права защищены.
-    </footer>
-</body>
-
+            <!-- Page Content -->
+            <main>
+                {{ $slot }}
+            </main>
+        </div>
+    </body>
 </html>
