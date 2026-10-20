@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Apartment;
 
 class ApartmentSeeder extends Seeder
 {
@@ -12,7 +13,7 @@ class ApartmentSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Apartment::create([
+        Apartment::create([
             'title' => 'Уютная студия в центре',
             'description' => 'Светлая студия с новым ремонтом, есть всё для комфортного проживания. 5 минут до метро.',
             'address' => 'ул. Ленина, д. 10, кв. 45',
@@ -21,7 +22,7 @@ class ApartmentSeeder extends Seeder
             'is_available' => true,
         ]);
 
-        \App\Models\Apartment::create([
+        Apartment::create([
             'title' => 'Просторная двушка для семьи',
             'description' => 'Две раздельные комнаты, большая кухня, детский уголок. Рядом парк.',
             'address' => 'пр. Мира, д. 5, кв. 12',
@@ -30,7 +31,7 @@ class ApartmentSeeder extends Seeder
             'is_available' => true,
         ]);
 
-        \App\Models\Apartment::create([
+        Apartment::create([
             'title' => 'Люкс с видом на город',
             'description' => 'Премиальная квартира на 15 этаже, панорамные окна, джакузи.',
             'address' => 'ул. Советская, д. 22, кв. 101',
@@ -39,7 +40,7 @@ class ApartmentSeeder extends Seeder
             'is_available' => true,
         ]);
 
-        \App\Models\Apartment::create([
+        Apartment::create([
             'title' => 'Компактная однушка у вокзала',
             'description' => 'Идеальный вариант для коротких поездок. Чисто, тихо, удобно.',
             'address' => 'ул. Железнодорожная, д. 3, кв. 8',
@@ -48,7 +49,7 @@ class ApartmentSeeder extends Seeder
             'is_available' => true,
         ]);
 
-        \App\Models\Apartment::create([
+        Apartment::create([
             'title' => 'Семейный трехкомнатный апартамент',
             'description' => 'Огромная квартира для большой компании. Три спальни, большая гостиная.',
             'address' => 'ул. Цветочная, д. 14, кв. 2',
