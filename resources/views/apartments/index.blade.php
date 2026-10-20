@@ -58,7 +58,7 @@
             <p class="status">
                 {{ $apartment->is_available ? '✅ Свободна' : '❌ Занята' }}
             </p>
-            <a href="#">Посмотреть детали</a>
+            <a href="{{ route('apartments.show', $apartment->id) }}">Посмотреть детали</a> {{-- Функция route() берет имя маршрута apartments.show и подставляет в него ID текущей квартиры из цикла. --}}
         </div>
         @endforeach
     </div>

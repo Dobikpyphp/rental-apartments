@@ -15,4 +15,14 @@ class ApartmentController extends Controller
         // 2. Возвращаем страницу 'apartments.index' и передаем туда данные
         return view('apartments.index', compact('apartments'));
     }
+
+    public function show($id)
+    {
+        // Находим квартиру по ID. 
+        // findOrFail означает: "Найди квартиру или, если её нет, покажи ошибку 404 (Страница не найдена)"
+        $apartment = Apartment::findOrFail($id);
+
+        // Передаем эту одну конкретную квартиру в шаблон show
+        return view('apartments.show', compact('apartment'));
+    }
 }
