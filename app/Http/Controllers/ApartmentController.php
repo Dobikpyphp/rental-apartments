@@ -16,7 +16,7 @@ class ApartmentController extends Controller
         return view('apartments.index', compact('apartments'));
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         // Находим квартиру по ID. 
         // findOrFail означает: "Найди квартиру или, если её нет, покажи ошибку 404 (Страница не найдена)"
