@@ -13,7 +13,7 @@ class AdminController extends Controller
         return view('admin.index', compact('apartments'));
     }
 
-    public function update(Request $request, $id) //Request $request — это объект, который содержит все данные, пришедшие из формы.
+    public function update(Request $request, int $id) //Request $request — это объект, который содержит все данные, пришедшие из формы.
     {
         $apartment = Apartment::findOrFail($id);
 
