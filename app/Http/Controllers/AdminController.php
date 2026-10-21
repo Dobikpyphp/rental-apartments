@@ -25,4 +25,32 @@ class AdminController extends Controller
 
         return redirect()->route('admin.index')->with('success', 'Данные обновлены!');
     }
+
+    public function create()
+    {
+        return view('admin.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate(
+            [
+                'title'           => 'required|max:255',
+                'description'    => 'required',
+                'address'        => 'required',
+                'price_per_//night' => 'required|numeric|min:0',
+                'rooms'           => 'required|integer|min:1',
+                'is_available'    => 'boolean',
+            ]
+        );
+
+        Apartment::create($validated);
+        return redirect()->route('admin.index')->with('success', 'Данные сохранены успешно!');
+    }
+
+    public function destroy(int $id)
+    {
+        Apartment::findOrFail($id)->delete();
+        return redirect()->route('admin.index')->with('success', 'Данные успешно удалены!');
+    }
 }
