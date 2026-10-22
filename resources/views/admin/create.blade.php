@@ -5,7 +5,7 @@
 @section('content')
 <h1 class="mb-4">Добавить квартиру</h1>
 
-<form action="{{ route('admin.store') }}" method="POST">
+<form action="{{ route('admin.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="mb-4">
         <label for="title" class="block text-sm font-medium text-gray-700">Название</label>
@@ -64,6 +64,18 @@
             required>
         @error('title') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
     </div>
+
+    <input type="file"
+        class="mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border 
+           file:mr-4 file:py-2 file:px-4 
+           file:rounded-full file:border-0 
+           file:text-sm file:font-semibold 
+           file:bg-blue-50 file:text-blue-700 
+           hover:file:bg-blue-100"
+        name="images[]"
+        id="image"
+        multiple>
+
 
     <div class="mb-4 flex items-center gap-2">
         <input class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"

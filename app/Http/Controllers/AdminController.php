@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Apartment;
+use App\Models\Image;
 
 class AdminController extends Controller
 {
@@ -46,7 +47,18 @@ class AdminController extends Controller
             ]
         );
 
-        Apartment::create($validated);
+        $apartment = Apartment::create($validated);
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                // Сохраняем файл на диск
+                $path = $image->store('apartments', 'public');
+                // Сохраняем путь в базу
+                Image::create([
+                    'path' => $path,
+                    'apartment_id' => $apartment->id,
+                ]);
+            }
+        }
         return redirect()->route('admin.index')->with('success', 'Данные сохранены успешно!');
     }
 

@@ -15,6 +15,22 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <!-- Ссылка на главную (доступна всем) -->
+                    <x-nav-link :href="route('apartments.index')" :active="request()->routeIs('apartments.index')">
+                        {{ __('Каталог') }}
+                    </x-nav-link>
+
+                    <!-- Ссылки для админа (только если пользователь авторизован) -->
+                    @auth
+                    <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.*')">
+                        {{ __('Управление') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('admin.create')" :active="request()->routeIs('admin.create')">
+                        {{ __('Добавить квартиру') }}
+                    </x-nav-link>
+                    @endauth
+
                 </div>
             </div>
 
@@ -43,7 +59,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -89,7 +105,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
