@@ -33,12 +33,14 @@ class AdminController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
+
         $validated = $request->validate(
             [
                 'title'           => 'required|max:255',
                 'description'    => 'required',
                 'address'        => 'required',
-                'price_per_//night' => 'required|numeric|min:0',
+                'price_per_night' => 'required|numeric|min:0',
                 'rooms'           => 'required|integer|min:1',
                 'is_available'    => 'boolean',
             ]
