@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/update/{id}', [AdminController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('destroy');
     });
+
+    Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
 });
 
 // Подключаем маршруты авторизации (login, register, logout)
