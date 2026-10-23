@@ -76,6 +76,12 @@
         id="image"
         multiple>
 
+    <!-- file:mr-4 - отступ справа от кнопки до текста «No file chosen».
+    file:py-2 file:px-4 - внутренние отступы самой кнопки.
+    file:rounded-full - делает кнопку овальной (очень современный вид).
+    file:bg-blue-50 file:text-blue-700 - делает кнопку нежно-голубой с темно-синим текстом.
+    hover:file:bg-blue-100 - кнопка станет чуть темнее при наведении. -->
+
 
     <div class="mb-4 flex items-center gap-2">
         <input class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"

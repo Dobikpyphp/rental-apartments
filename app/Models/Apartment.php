@@ -25,4 +25,10 @@ class Apartment extends Model
         // hasMany означает «имеет много»
         return $this->hasMany(Image::class);
     }
+
+    public function bookings()
+    {
+        // hasMany означает «имеет много»
+        return $this->hasMany(Booking::class);
+    }
 }
