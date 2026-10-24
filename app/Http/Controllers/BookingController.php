@@ -31,6 +31,8 @@ class BookingController extends Controller
             })
             ->exists(); // Возвращает true, если нашли хотя бы одно пересечение
 
+        // dd($sql);
+
         if ($exists) {
             // Если пересечение найдено, возвращаем назад с ошибкой
             return redirect()->back()

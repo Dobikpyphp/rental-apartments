@@ -9,6 +9,16 @@ class Booking extends Model
 {
     use HasFactory;
 
+    // РАЗРЕШАЕМ заполнение всех полей, которые мы используем в методе store
+    protected $fillable = [
+        'apartment_id',
+        'user_id',
+        'check_in',
+        'check_out',
+        'total_price',
+        'status',
+    ];
+
     public function apartment()
     {
         return $this->belongsTo(Apartment::class);

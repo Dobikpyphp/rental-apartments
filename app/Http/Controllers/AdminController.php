@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Apartment;
 use App\Models\Image;
+use App\Models\Booking;
 
 class AdminController extends Controller
 {
@@ -66,6 +67,27 @@ class AdminController extends Controller
     {
         Apartment::findOrFail($id)->delete();
         return redirect()->route('admin.index')->with('success', 'Данные успешно удалены!');
+    }
+
+    public function bookings()
+    {
+        // Используем with(), чтобы Laravel одним запросом достал и бронь, и данные квартиры, и данные пользователя.
+        // Если так не сделать, будет проблема N+1 (запрос в базу на каждую строку таблицы), и сайт будет тормозить.
+        $bookings = Booking::with(['apartment', 'user'])->orderBy('created_at', 'desc')->get();
+
+        return view('admin.bookings', compact('bookings'));
+    }
+
+    public function updateBookingStatus(Request $request, int $id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        // Обновляем статус из того, что пришло из формы
+        $booking->update([
+            'status' => $request->status
+        ]);
+
+        return redirect()->back()->with('success', 'Статус бронирования обновлен!');
     }
 }
 

@@ -46,6 +46,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/store', [AdminController::class, 'store'])->name('store');
         Route::post('/update/{id}', [AdminController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('destroy');
+
+        // Список всех бронирований
+        Route::get('/bookings', [AdminController::class, 'bookings'])->name('bookings.index');
+
+        // Обновление статуса бронирования (подтвердить/отменить)
+        Route::patch('/bookings/{id}', [AdminController::class, 'updateBookingStatus'])->name('bookings.update');
     });
 
     Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');

@@ -22,7 +22,40 @@
     </p>
 
     @if($apartment->is_available)
-    <a href="#" class="btn-book">Забронировать сейчас</a>
+    <!-- <a href="#" class="btn-book">Забронировать сейчас</a> -->
+    <div class="mt-8 p-6 bg-white rounded-xl shadow-sm border border-gray-200">
+        <h3 class="text-xl font-bold mb-4 text-gray-800">Забронировать квартиру</h3>
+
+        <form action="{{ route('bookings.store') }}" method="POST" class="space-y-4">
+            @csrf
+
+            {{-- Скрытое поле: передаем ID квартиры, чтобы контроллер знал, ЧТО бронируем --}}
+            <input type="hidden" name="apartment_id" value="{{ $apartment->id }}">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {{-- Дата заезда --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Дата заезда</label>
+                    <input type="date" name="check_in"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                        required>
+                </div>
+
+                {{-- Дата выезда --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Дата выезда</label>
+                    <input type="date" name="check_out"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                        required>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full btn-book text-center py-3">
+                Подтвердить бронирование
+            </button>
+        </form>
+    </div>
+
     @endif
 </div>
 <div class="gallery grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
