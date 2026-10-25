@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\GuestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,6 +56,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
+
+    // Раздел управления гостями
+    Route::prefix('admin/guests')->name('admin.guests.')->group(function () {
+        Route::get('/', [GuestController::class, 'index'])->name('index');
+        Route::get('/create', [GuestController::class, 'create'])->name('create');
+        Route::post('/store', [GuestController::class, 'store'])->name('store');
+        Route::get('/{guest}', [GuestController::class, 'show'])->name('show');
+        Route::patch('/{guest}', [GuestController::class, 'update'])->name('update');
+    });
 });
 
 // Подключаем маршруты авторизации (login, register, logout)
