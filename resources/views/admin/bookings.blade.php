@@ -7,13 +7,6 @@
     <h1 class="text-2xl font-bold">Все бронирования</h1>
     <a href="{{ route('admin.index') }}" class="text-blue-600 hover:underline">← К квартирам</a>
 </div>
-
-@if(session('success'))
-<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-    {{ session('success') }}
-</div>
-@endif
-
 <div class="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
     <table class="w-full text-left border-collapse">
         <thead class="bg-gray-50 border-b border-gray-200">
@@ -35,7 +28,7 @@
                 </td>
                 <td class="p-4 text-gray-700">{{ $booking->apartment->title }}</td>
                 <td class="p-4 text-sm text-gray-600">
-                    {{ $booking->check_in }} - {{ $booking->check_out }}
+                    {{ $booking->check_in }} -> {{ $booking->check_out }}
                 </td>
                 <td class="p-4 font-bold text-gray-800">{{ $booking->total_price }} руб.</td>
                 <td class="p-4">
