@@ -28,4 +28,10 @@ class Booking extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // Бронирование принадлежит одному конкретному гостю
+    public function guest()
+    {
+        return $this->belongsTo(Guest::class);
+    }
 }

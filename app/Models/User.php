@@ -51,4 +51,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Booking::class);
     }
+
+    // Пользователь может иметь один профиль гостя
+    public function guest()
+    {
+        return $this->hasOne(Guest::class);
+    }
 }
