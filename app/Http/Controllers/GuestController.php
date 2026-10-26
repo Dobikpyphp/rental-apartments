@@ -33,4 +33,25 @@ class GuestController extends Controller
 
         return redirect()->route('admin.guests.index')->with('success', 'Гость добавлен в базу!');
     }
+
+    public function show(Guest $guest) //Метод show: Здесь мы используем крутую фишку Laravel — Route Model Binding. Если в маршруте написано {guest}, а в методе контроллера мы укажем тип Guest $guest, Laravel сам найдет гостя в базе по ID.
+    {
+        // Загружаем гостя вместе с его бронированиями, чтобы не делать лишних запросов к БД
+        $guest->load('bookings.apartment');
+
+        return view('admin.guests.show', compact('guest'));
+    }
+
+    public function update(Request $request, Guest $guest)
+    {
+        $validated = $request->validate([
+            'notes' => 'nullable|string',
+            'rating' => 'nullable|integer|min:1|max:5',
+            'is_blacklisted' => 'boolean',
+        ]);
+
+        $guest->update($validated);
+
+        return redirect()->back()->with('success', 'Досье гостя обновлено!');
+    }
 }

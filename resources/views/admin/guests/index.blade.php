@@ -18,6 +18,7 @@
                 <th class="p-4 font-semibold text-gray-600">Телефон</th>
                 <th class="p-4 font-semibold text-gray-600">Рейтинг</th>
                 <th class="p-4 font-semibold text-gray-600">Статус</th>
+                <th class="p-4 font-semibold text-gray-600">Действие</th>
             </tr>
         </thead>
         <tbody>
@@ -35,7 +36,6 @@
                     <span class="text-green-600">✅ Надежный</span>
                     @endif
                 </td>
-                <td class="p-4">...Статус...</td>
                 <td class="p-4">
                     <a href="{{ route('admin.guests.show', $guest->id) }}" class="text-blue-600 hover:underline">Открыть досье</a>
                 </td>
