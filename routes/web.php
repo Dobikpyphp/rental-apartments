@@ -48,6 +48,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/update/{id}', [AdminController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('destroy');
 
+        // Редактирование квартиры
+        Route::get('/apartments/{id}/edit', [AdminController::class, 'edit'])->name('apartments.edit');
+        Route::patch('/apartments/{id}', [AdminController::class, 'update'])->name('apartments.update');
+
         Route::prefix('bookings')->name('bookings.')->group(function () {
             // Список всех бронирований
             Route::get('/', [AdminController::class, 'bookings'])->name('index');

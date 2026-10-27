@@ -26,7 +26,7 @@
             rows="4"
             placeholder="Введите описание объекта"
             required></textarea>
-        @error('title') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        @error('description') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
     </div>
 
     <div class="mb-4">
@@ -37,7 +37,7 @@
             name="address"
             placeholder="Введите адрес"
             required>
-        @error('title') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        @error('address') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
     </div>
 
     <div class="mb-4">
@@ -50,7 +50,7 @@
             min="0"
             step="0.01"
             required>
-        @error('title') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        @error('price_per_night') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
     </div>
 
     <div class="mb-4">
@@ -62,7 +62,7 @@
             placeholder="Введите количество комнат"
             min="1"
             required>
-        @error('title') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        @error('rooms') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
     </div>
 
     <input type="file"

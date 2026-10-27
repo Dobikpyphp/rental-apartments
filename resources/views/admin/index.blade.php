@@ -18,6 +18,7 @@
             <th style="padding: 15px;">Цена за сутки</th>
             <th style="padding: 15px;">Статус</th>
             <th style="padding: 15px;">Действие</th>
+            <th style="padding: 15px;">Редактировать</th>
             <th style="padding: 15px;">Удалить</th>
         </tr>
     </thead>
@@ -43,6 +44,9 @@
             </td>
             <td style="padding: 15px;">
                 <a href="{{ route('apartments.show', $apartment->id) }}" target="_blank">👁️ Посмотреть</a>
+            </td>
+            <td style="padding: 15px;">
+                <a href="{{ route('admin.apartments.edit', $apartment->id) }}">Редактировать</a>
             </td>
             {{-- ДОБАВЛЯЕМ кнопку удаления --}}
             <td class="p-4">

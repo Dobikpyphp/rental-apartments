@@ -15,17 +15,38 @@ class AdminController extends Controller
         return view('admin.index', compact('apartments'));
     }
 
-    public function update(Request $request, int $id) //Request $request — это объект, который содержит все данные, пришедшие из формы.
+    public function edit(int $id)
+    {
+        $apartment = Apartment::findOrFail($id);
+        return view('admin.apartments.edit', compact('apartment'));
+    }
+
+    public function update(Request $request, int $id)
     {
         $apartment = Apartment::findOrFail($id);
 
-        // Обновляем данные из формы
-        $apartment->update([
-            'price_per_night' => $request->price_per_night,
-            'is_available' => $request->has('is_available'), // Проверяем, отмечен ли чекбокс
+        $validated = $request->validate([
+            'title'           => 'required|max:255',
+            'description'    => 'required',
+            'address'        => 'required',
+            'price_per_night' => 'required|numeric|min:0',
+            'rooms'           => 'required|integer|min:1',
+            'is_available'    => 'boolean',
+            'has_wifi'        => 'boolean',
+            'has_microwave'   => 'boolean',
+            'has_tv'          => 'boolean',
         ]);
 
-        return redirect()->route('admin.index')->with('success', 'Данные обновлены!');
+        // Важный момент с чекбоксами: если чекбокс не отмечен, браузер его НЕ присылает.
+        // Поэтому мы принудительно устанавливаем false для всех удобств, если их нет в запросе.
+        $validated['is_available'] = $request->has('is_available');
+        $validated['has_wifi'] = $request->has('has_wifi');
+        $validated['has_microwave'] = $request->has('has_microwave');
+        $validated['has_tv'] = $request->has('has_tv');
+
+        $apartment->update($validated);
+
+        return redirect()->route('admin.index')->with('success', 'Данные квартиры обновлены!');
     }
 
     public function create()
