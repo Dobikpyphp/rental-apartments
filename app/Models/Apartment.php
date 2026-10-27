@@ -18,6 +18,9 @@ class Apartment extends Model
         'rooms',
         'is_available',
         'path',
+        'has_wifi',
+        'has_microwave',
+        'has_tv',
     ];
 
     public function images()

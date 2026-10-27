@@ -17,6 +17,7 @@
                 <th class="p-4 font-semibold text-gray-600">Сумма</th>
                 <th class="p-4 font-semibold text-gray-600">Статус</th>
                 <th class="p-4 font-semibold text-//gray-600">Действие</th>
+                <th class="p-4 font-semibold text-//gray-600">Удалить</th>
             </tr>
         </thead>
         <tbody>
@@ -48,6 +49,14 @@
                             <option value="cancelled" {{ $booking->status == 'cancelled' ? 'selected' : '' }}>Отменить</option>
                         </select>
                         <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">OK</button>
+                    </form>
+                </td>
+                {{-- ДОБАВЛЯЕМ кнопку удаления --}}
+                <td class="p-4">
+                    <form action=" {{ route('admin.bookings.destroy', $booking->id) }}" method="POST" onsubmit="return confirm('Вы точно хотите удалить эту бронь?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">🗑️</button>
                     </form>
                 </td>
             </tr>

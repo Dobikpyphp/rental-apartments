@@ -89,6 +89,14 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Статус бронирования обновлен!');
     }
+
+    public function destroyBooking(int $id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->delete();
+
+        return redirect()->back()->with('success', 'Бронирование успешно удалено!');
+    }
 }
 
 // $path = $image->store('apartments', 'public');

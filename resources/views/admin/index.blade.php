@@ -18,6 +18,7 @@
             <th style="padding: 15px;">Цена за сутки</th>
             <th style="padding: 15px;">Статус</th>
             <th style="padding: 15px;">Действие</th>
+            <th style="padding: 15px;">Удалить</th>
         </tr>
     </thead>
     <tbody>
@@ -42,6 +43,14 @@
             </td>
             <td style="padding: 15px;">
                 <a href="{{ route('apartments.show', $apartment->id) }}" target="_blank">👁️ Посмотреть</a>
+            </td>
+            {{-- ДОБАВЛЯЕМ кнопку удаления --}}
+            <td class="p-4">
+                <form action=" {{ route('admin.destroy', $apartment->id) }}" method="POST" onsubmit="return confirm('Вы точно хотите удалить эту квартиру?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">🗑️</button>
+                </form>
             </td>
         </tr>
         @endforeach

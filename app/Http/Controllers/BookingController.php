@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Guest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,14 +41,31 @@ class BookingController extends Controller
                 ->with('error', 'Извините, квартира занята на выбранные даты!');
         }
 
-        // 4. Если мы дошли сюда — значит квартира свободна! 
-        // Теперь создаем бронирование
+        $user = Auth::user(); // Получаем объект пользователя
+
+        // 1. Проверяем, есть ли у этого пользователя профиль гостя
+        $guest = $user->guest; // Используем связь, которую создали в модели User
+
+        if (!$guest) {
+            $guest = Guest::create([
+                // Если $user->name пустой, запишем 'Гость'
+                'full_name' => $user->name ?? 'Гость без имени',
+                'email'     => $user->email ?? null,
+                'phone'     => '',
+                'rating'    => 5,
+            ]);
+        }
+
+        // Если мы дошли сюда — значит квартира свободна! 
+
+        // 3. Теперь создаем бронирование, привязывая его к профилю ГОСТЯ
         Booking::create([
             'apartment_id' => $apartmentId,
-            'user_id'      => Auth::id(), // ID текущего залогиненного пользователя
+            'user_id'      => $user->id,
+            'guest_id'     => $guest->id, // ТЕПЕРЬ ПРИВЯЗАНО!
             'check_in'     => $checkIn,
             'check_out'    => $checkOut,
-            'total_price'  => 0, // Пока оставим 0, расчет цены сделаем в следующем шаге
+            'total_price'  => 0,
             'status'       => 'pending',
         ]);
 
