@@ -19,6 +19,8 @@ Route::get('/', [ApartmentController::class, 'index'])->name('apartments.index')
 // Страница детального просмотра одной квартиры
 Route::get('/apartments/{id}', [ApartmentController::class, 'show'])->name('apartments.show');
 
+// Маршрут для экспорта календаря (публичный)
+Route::get('/ical/apartment/{apartment}', [ApartmentController::class, 'exportIcal'])->name('apartments.ical');
 
 /*
 |--------------------------------------------------------------------------

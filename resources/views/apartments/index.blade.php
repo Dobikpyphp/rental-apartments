@@ -56,7 +56,7 @@
             <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                 <div class="text-left">
                     <span class="text-sm text-gray-500 block">Цена за сутки</span>
-                    <span class="text-2xl font-extrabold text-green-600">{{ number_format($apartment->price_night, 0, '.', ' ') }} ₽</span>
+                    <span class="text-2xl font-extrabold text-green-600">{{ number_format($apartment->price_per_night, 0, '.', ' ') }} ₽</span>
                 </div>
                 <a href="{{ route('apartments.show', $apartment->id) }}"
                     class="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg">
