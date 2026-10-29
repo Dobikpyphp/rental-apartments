@@ -51,6 +51,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Редактирование квартиры
         Route::get('/apartments/{id}/edit', [AdminController::class, 'edit'])->name('apartments.edit');
         Route::patch('/apartments/{id}', [AdminController::class, 'update'])->name('apartments.update');
+        Route::delete('/apartments/images/{image}', [AdminController::class, 'deleteImage'])->name('apartments.image.destroy');
+
 
         Route::prefix('bookings')->name('bookings.')->group(function () {
             // Список всех бронирований

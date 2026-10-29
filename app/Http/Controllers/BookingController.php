@@ -51,7 +51,7 @@ class BookingController extends Controller
                 // Если $user->name пустой, запишем 'Гость'
                 'full_name' => $user->name ?? 'Гость без имени',
                 'email'     => $user->email ?? null,
-                'phone'     => '',
+                'phone'     => null,
                 'rating'    => 5,
             ]);
         }

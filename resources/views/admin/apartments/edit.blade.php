@@ -5,6 +5,30 @@
 @section('content')
 <h1 class="mb-4">Редактирование данных квартиры</h1>
 
+<div class="mb-8">
+    <h3 class="text-lg font-bold mb-3">Галерея квартиры</h3>
+    <div class="grid grid-cols-4 gap-4">
+        @foreach($apartment->images as $image)
+        <div class="relative group">
+            <img src="{{ Storage::url($image->path) }}" class="w-full h-32 object-cover rounded-lg border">
+
+            <!-- Кнопка удаления (появляется при наведении) -->
+            <form action="{{ route('admin.apartments.image.destroy', $image->id) }}" method="POST"
+                class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="bg-red-600 text-white rounded-full p-1 shadow-lg hover:bg-red-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </form>
+        </div>
+        @endforeach
+    </div>
+</div>
+
+
 <form action="{{ route('admin.update', $apartment->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="mb-4">
@@ -81,16 +105,20 @@
         </label>
     </div>
 
-    <input type="file"
-        class="mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border 
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Добавить новые фото</label>
+        <input type="file"
+            class="mb-4 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border 
            file:mr-4 file:py-2 file:px-4 
            file:rounded-full file:border-0 
            file:text-sm file:font-semibold 
            file:bg-blue-50 file:text-blue-700 
            hover:file:bg-blue-100"
-        name="images[]"
-        id="image"
-        multiple>
+            name="images[]"
+            id="image"
+            multiple>
+    </div>
+
 
     <!-- file:mr-4 - отступ справа от кнопки до текста «No file chosen».
     file:py-2 file:px-4 - внутренние отступы самой кнопки.

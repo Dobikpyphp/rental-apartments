@@ -18,11 +18,19 @@ class ApartmentController extends Controller
 
     public function show(int $id)
     {
-        // Находим квартиру по ID. 
-        // findOrFail означает: "Найди квартиру или, если её нет, покажи ошибку 404 (Страница не найдена)"
         $apartment = Apartment::findOrFail($id);
 
-        // Передаем эту одну конкретную квартиру в шаблон show
-        return view('apartments.show', compact('apartment'));
+        // Получаем все бронирования этой квартиры
+        $bookings = $apartment->bookings()->get();
+
+        // Превращаем бронирования в простой массив дат: [['start' => '2023-10-10', 'end' => '2023-10-15'], ...]
+        $blockedDates = $bookings->map(function ($booking) {
+            return [
+                'start' => $booking->check_in,
+                'end' => $booking->check_out,
+            ];
+        });
+
+        return view('apartments.show', compact('apartment', 'blockedDates'));
     }
 }

@@ -16,8 +16,8 @@
                 <th class="p-4 font-semibold text-gray-600">Даты</th>
                 <th class="p-4 font-semibold text-gray-600">Сумма</th>
                 <th class="p-4 font-semibold text-gray-600">Статус</th>
-                <th class="p-4 font-semibold text-//gray-600">Действие</th>
-                <th class="p-4 font-semibold text-//gray-600">Удалить</th>
+                <th class="p-4 font-semibold text-gray-600">Действие</th>
+                <th class="p-4 font-semibold text-gray-600">Удалить</th>
             </tr>
         </thead>
         <tbody>

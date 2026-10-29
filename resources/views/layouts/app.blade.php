@@ -6,106 +6,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Аренда квартир - @yield('title')</title>
+    <title>{{ config('app.name', 'Аренда Квартир') }} - @yield('title')</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Scripts & Tailwind (от Breeze) -->
+    <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Flatpickr CSS (для нашего будущего календаря) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-    <!-- ВОЗВРАЩАЕМ ТВОИ СТИЛИ -->
     <style>
+        /* Добавляем несколько глобальных улучшений, которые сложно сделать через Tailwind */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Figtree', sans-serif;
         }
 
-        .container-custom {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        .catalog {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .card {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 15px;
-            width: 300px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .card h2 {
-            font-size: 1.2em;
-            margin-top: 0;
-            color: #333;
-        }
-
-        .price {
-            color: #27ae60;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        .detail-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-book {
-            display: inline-block;
-            background: #007bff;
-            color: white !important;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-
-        .btn-book:hover {
-            background: #0056b3;
+        .custom-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
         }
     </style>
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
-        <!-- Шапка от Breeze (там теперь красивое меню и профиль) -->
+<body class="font-sans antialiased bg-gray-50 text-gray-900">
+    <div class="min-h-screen">
+        <!-- Шапка сайта (Навигация Breeze) -->
         @include('layouts.navigation')
 
-        <div class="container-custom">
-            {{-- Уведомление об успехе --}}
-            @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Успех! </strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
-            @endif
+        <!-- Основной контейнер -->
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
 
-            {{-- Уведомление об ошибке --}}
-            @if(session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Внимание! </strong>
-                <span class="block sm:inline">{{ session('error') }}</span>
+            <!-- Блок уведомлений (Flash Messages) -->
+            <div class="mb-6">
+                @if(session('success'))
+                <div class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-500 bg-green-50 rounded-lg shadow-sm" role="alert">
+                    <svg class="flex-shrink-0 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM//9 11a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="ml-3 text-sm font-medium">{{ session('success') }}</div>
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="flex items-center p-4 mb-4 text-red-800 border-t-4 border-red-500 bg-red-50 rounded-lg shadow-sm" role="alert">
+                    <svg class="flex-shrink-0 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zM9 11a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="ml-3 text-sm font-medium">{{ session('error') }}</div>
+                </div>
+                @endif
             </div>
-            @endif
+
+            <!-- Контент страницы -->
+            <main>
+                @yield('content')
+            </main>
         </div>
 
-        <!-- Основной контент -->
-        <div class="container-custom">
-            @yield('content')
-        </div>
+        <!-- Футер -->
+        <footer class="py-8 text-center text-gray-400 text-sm">
+            &copy; {{ date('Y') }} Сдача квартир посуточно. Все права защищены.
+        </footer>
     </div>
+
+    <!-- Скрипты -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </body>
 
 </html>

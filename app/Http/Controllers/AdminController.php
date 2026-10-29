@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Apartment;
 use App\Models\Image;
 use App\Models\Booking;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -46,7 +47,18 @@ class AdminController extends Controller
 
         $apartment->update($validated);
 
-        return redirect()->route('admin.index')->with('success', 'Данные квартиры обновлены!');
+        // --- ЛОГИКА ДОБАВЛЕНИЯ НОВЫХ ФОТО ---
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('apartments', 'public');
+                Image::create([
+                    'path' => $path,
+                    'apartment_id' => $apartment->id,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.index')->with('success', 'Данные квартиры и фото обновлены!');
     }
 
     public function create()
@@ -117,6 +129,19 @@ class AdminController extends Controller
         $booking->delete();
 
         return redirect()->back()->with('success', 'Бронирование успешно удалено!');
+    }
+
+    public function deleteImage(int $id)
+    {
+        $image = Image::findOrFail($id);
+
+        // 1. Удаляем физический файл с диска
+        Storage::disk('public')->delete($image->path);
+
+        // 2/ Удаляем запись из базы данных
+        $image->delete();
+
+        return back()->with('success', 'Фотография удалена!');
     }
 }
 
