@@ -5,6 +5,7 @@ use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\IcalController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,32 @@ Route::get('/apartments/{id}', [ApartmentController::class, 'show'])->name('apar
 
 // Маршрут для экспорта календаря (публичный)
 Route::get('/ical/apartment/{apartment}', [ApartmentController::class, 'exportIcal'])->name('apartments.ical');
+
+
+Route::get('/fake-ical-service', function () {
+    $content = "BEGIN:VCALENDAR\r\n";
+    $content .= "VERSION:2.0\r\C_PRODID:fake-service\r\n";
+
+    // Бронь 1
+    $content .= "BEGIN:VEVENT\r\n";
+    $content .= "UID:booking-123@external.com\r\n";
+    $content .= "DTSTART:20261110T000000Z\r\n";
+    $content .= "DTEND:20261115T000000Z\r\n";
+    $content .= "SUMMARY:Занято через Авито\r\n";
+    $content .= "END:VEVENT\r\n";
+
+    // Бронь 2
+    $content .= "BEGIN:VEVENT\r\n";
+    $content .= "UID:booking-456@external.com\r\n";
+    $content .= "DTSTART:20261201T000000Z\r\n";
+    $content .= "DTEND:20261205T000000Z\r\n";
+    $content .= "SUMMARY:Занято через Броневик\r\n";
+    $content .= "END:VEVENT\r\n";
+
+    $content .= "END:VCALENDAR";
+
+    return response($content)->header('Content-Type', 'text/calendar');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +76,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/store', [AdminController::class, 'store'])->name('store');
         Route::post('/update/{id}', [AdminController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('destroy');
+
+        Route::get('/ical/import/{apartment}', [IcalController::class, 'import'])->name('ical.import');
+
 
         // Редактирование квартиры
         Route::get('/apartments/{id}/edit', [AdminController::class, 'edit'])->name('apartments.edit');

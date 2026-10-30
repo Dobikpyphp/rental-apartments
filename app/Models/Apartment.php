@@ -21,6 +21,7 @@ class Apartment extends Model
         'has_wifi',
         'has_microwave',
         'has_tv',
+        'ical_url',
     ];
 
     public function images()

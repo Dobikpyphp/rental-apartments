@@ -28,7 +28,6 @@
     </div>
 </div>
 
-
 <form action="{{ route('admin.update', $apartment->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="mb-4">
@@ -126,6 +125,17 @@
     file:bg-blue-50 file:text-blue-700 - делает кнопку нежно-голубой с темно-синим текстом.
     hover:file:bg-blue-100 - кнопка станет чуть темнее при наведении. -->
 
+
+    <div class="mb-4">
+        <label for="ical_url" class="block text-sm font-medium text-gray-700">Ссылка на iCal-календарь (Авито/Броневик)</label>
+        <input type="text"
+            class="mt-1 block w-full rounded-md border-gray-30/ed shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+            id="ical_url"
+            name="ical_url"
+            value="{{ $apartment->ical_url }}"
+            placeholder="https://example.com/calendar.ics">
+        @error('ical_url') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+    </div>
 
     <div class="mb-4 flex items-center gap-2">
         <input class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"

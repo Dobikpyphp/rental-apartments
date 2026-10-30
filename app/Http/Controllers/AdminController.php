@@ -36,6 +36,7 @@ class AdminController extends Controller
             'has_wifi'        => 'boolean',
             'has_microwave'   => 'boolean',
             'has_tv'          => 'boolean',
+            'ical_url'        => 'nullable|url',
         ]);
 
         // Важный момент с чекбоксами: если чекбокс не отмечен, браузер его НЕ присылает.

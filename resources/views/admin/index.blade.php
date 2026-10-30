@@ -35,7 +35,10 @@
                     <label style="font-size: 0.9em;">
                         <input type="checkbox" name="is_available" {{ $apartment->is_available ? 'checked' : '' }}> Свободна
                     </label>
-
+                    <a href="{{ route('admin.ical.import', $apartment->id) }}"
+                        class="mt-2 inline-block bg-indigo-600 text-white px-4 py-2 rounded text-sm hover:bg-indigo-700 transition-colors">
+                        🔄 Синхронизировать с (Авито/Броневик) сейчас
+                    </a>
                     <button type="submit" style="background: #27ae60; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">💾</button>
                 </form>
             </td>

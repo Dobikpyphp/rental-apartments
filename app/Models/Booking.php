@@ -17,6 +17,7 @@ class Booking extends Model
         'check_out',
         'total_price',
         'status',
+        'uid',
     ];
 
     public function apartment()
