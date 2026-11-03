@@ -2,20 +2,34 @@
 
 namespace App\Http\Controllers;
 
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Apartment; // Не забываем про use!
 
 class ApartmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // 1. Получаем все квартиры из базы данных
-        $apartments = Apartment::all();
+        $apartments = Apartment::with('images') // <--- Жадная загрузка (Eager Loading)
+            ->where('active', true)
+            // Фильтр по цене (до)
+            ->when($request->price_to, function ($query, $price) {
+                return $query->where('price_per_night', '<=', $price);
+            })
+            // Фильтр по комнатам
+            ->when($request->rooms, function ($query, $rooms) {
+                return $query->where('rooms', $rooms);
+            })
+            // Фильтр по удобствам (например, если передано wifi=1)
+            ->when($request->wifi, function ($query) {
+                return $query->where('has_wifi', true);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        // 2. Возвращаем страницу 'apartments.index' и передаем туда данные
         return view('apartments.index', compact('apartments'));
     }
+
 
     public function show(int $id)
     {

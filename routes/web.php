@@ -66,6 +66,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Страница моих бронирований для гостя
+    Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('my.bookings');
+    // Отмена брони гостем
+    Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+
     /* 
        ПАНЕЛЬ АДМИНИСТРАТОРА 
        Здесь мы управляем квартирами

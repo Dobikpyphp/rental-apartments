@@ -15,10 +15,18 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
                     <!-- Ссылка на главную (доступна всем) -->
                     <x-nav-link :href="route('apartments.index')" :active="request()->routeIs('apartments.index')">
                         {{ __('Каталог') }}
                     </x-nav-link>
+
+                    <!-- ДОБАВЛЕНО: Ссылка на мои бронирования (только для авторизованных) -->
+                    @auth
+                    <x-nav-link :href="route('my.bookings')" :active="request()->routeIs('my.bookings')">
+                        {{ __('Мои брони') }}
+                    </x-nav-link>
+                    @endauth
 
                     <!-- Ссылки для админа (только если пользователь авторизован) -->
                     @auth
@@ -86,12 +94,19 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
+    <!-- Responsive Navigation Menu (Мобильное меню) -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <!-- ДОБАВЛЕНО: Ссылка в мобильное меню -->
+            @auth
+            <x-responsive-nav-link :href="route('my.bookings')" :active="request()->routeIs('my.bookings')">
+                {{ __('Мои брони') }}
+            </x-responsive-nav-link>
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->
@@ -120,8 +135,3 @@
         </div>
     </div>
 </nav>
-
-{{-- x-nav-link --}} {{-- это специальный «компонент» Breeze. Он сам красит ссылку в синий цвет, если ты находишься на этой странице.
-    :href="route('...')" - используем именованные маршруты, которые мы создали ранее.
-    :active="request()->routeIs('...')" - эта магия говорит: «Подсвети эту ссылку, если текущий адрес совпадает с этим маршрутом».
-    @auth ... @endauth - это директива Blade. Всё, что внутри, увидит только залогиненный пользователь. Обычный клиент сайта не увидит ссылки на админку. --}}

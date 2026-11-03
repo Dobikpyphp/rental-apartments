@@ -28,6 +28,7 @@
                 <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Нет фото</div>
                 @endif
             </div>
+
             {{-- Дополнительные фото --}}
             @foreach($apartment->images->slice(1) as $image)
             <div class="relative overflow-hidden">

@@ -93,4 +93,32 @@ class BookingController extends Controller
 
         return redirect()->route('apartments.index')->with('success', 'Заявка на бронирование отправлена!');
     }
+
+    public function myBookings()
+    {
+        // Получаем бронирования только текущего авторизованного пользователя
+        $bookings = Booking::with(['apartment'])
+            ->where('user_id',  Auth::id())
+            ->orderBy('check_in', 'desc')
+            ->get();
+
+        return view('apartments.my_bookings', compact('bookings'));
+    }
+
+    public function cancel(Booking $booking)
+    {
+        // Проверяем, что бронь принадлежит пользователю
+        if ($booking->user_id !== Auth::id()) {
+            return back()->with('error', 'Вы не можете отменить чужую бронь!');
+        }
+
+        // Разрешаем отмену, только если статус 'pending'
+        if ($booking->status !== 'pending') {
+            return back()->with('error', 'Нельзя отменить уже подтвержденное бронирование.');
+        }
+
+        $booking->update(['status' => 'cancelled']);
+
+        return back()->with('success', 'Ваша заявка была отменена.');
+    }
 }
