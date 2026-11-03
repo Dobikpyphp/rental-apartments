@@ -108,5 +108,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
+// Информационные страницы
+Route::view('/terms', 'pages.terms')->name('pages.terms'); // Пользовательское соглашение
+Route::view('/rules', 'pages.rules')->name('pages.rules'); // Правила проживания
+Route::view('/about', 'pages.about')->name('pages.about'); // О нас/Контакты
+
+
 // Подключаем маршруты авторизации (login, register, logout)
 require __DIR__ . '/auth.php';

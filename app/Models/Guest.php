@@ -11,6 +11,7 @@ class Guest extends Model
 
     // РАЗРЕШАЕМ заполнение всех полей, которые мы используем в методе store
     protected $fillable = [
+        'user_id',
         'full_name',
         'phone',
         'email',

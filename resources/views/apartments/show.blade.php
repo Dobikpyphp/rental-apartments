@@ -112,6 +112,7 @@
 </div>
 @endsection
 
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // 1. Получаем данные из PHP (переводим массив PHP в массив JS)
@@ -182,3 +183,4 @@
         }
     });
 </script>
+@endpush

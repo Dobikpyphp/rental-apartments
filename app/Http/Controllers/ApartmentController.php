@@ -19,10 +19,13 @@ class ApartmentController extends Controller
 
     public function show(int $id)
     {
-        $apartment = Apartment::findOrFail($id);
+        // 1. Загружаем квартиру вместе с её изображениями (Eager Loading)
+        $apartment = Apartment::with('images')->findOrFail($id);
+        // $apartment = Apartment::where('active', true)->orderBy('created_at', 'desc')->get();
+        // Добавил фильтр 'active', чтобы вы могли скрывать квартиры из каталога
 
         // Получаем все бронирования этой квартиры
-        $bookings = $apartment->bookings()->get();
+        $bookings = $apartment->bookings()->where('status', 'confirmed')->get();
 
         // Превращаем бронирования в простой массив дат: [['start' => '2023-10-10', 'end' => '2023-10-15'], ...]
         $blockedDates = $bookings->map(function ($booking) {

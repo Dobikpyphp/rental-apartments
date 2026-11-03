@@ -29,6 +29,9 @@
                     <x-nav-link :href="route('admin.create')" :active="request()->routeIs('admin.create')">
                         {{ __('Добавить квартиру') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.bookings.index')" :active="request()->routeIs('admin.bookings.*')">
+                        {{ __('В список бронирований') }}
+                    </x-nav-link>
                     @endauth
 
                 </div>
