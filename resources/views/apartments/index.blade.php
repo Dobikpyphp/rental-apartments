@@ -12,20 +12,34 @@
         Комфортабельные апартаменты в лучших районах города с полным набором удобств для вашего комфорта.
     </p>
 
-    <!-- Быстрый поиск (оставляем его в Hero) -->
-    <div class="bg-white p-3 rounded-2xl shadow-xl border border-gray-100 flex flex-col md:flex-row gap-3 max-w-4xl mx-auto">
+    <!-- ФОРМА БЫСТРОГО ПОИСКА -->
+    <form action="{{ route('apartments.index') }}" method="GET" class="bg-white p-3 rounded-2xl shadow-xl border border-gray-100 flex flex-col md:flex-row gap-3 max-w-4xl mx-auto">
         <div class="flex-1 px-4 py-2 text-left">
             <label class="block text-xs font-semibold text-gray-400 uppercase">Заезд</label>
-            <input type="text" id="check-in" placeholder="Выберите дату" class="w-full focus:outline-none text-gray-700 font-medium bg-transparent cursor-pointer">
+            <input type="text" name="check_in" id="check-in" value="{{ request('check_in') }}" placeholder="Выберите дату" class="w-full focus:outline-none text-gray-700 font-medium bg-transparent cursor-pointer">
         </div>
+
         <div class="flex-1 px-4 py-2 border-b md:border-b-0 md:border-r border-gray-100 text-left">
             <label class="block text-xs font-semibold text-gray-400 uppercase">Выезд</label>
-            <input type="text" id="check-out" placeholder="Выберите дату" class="w-full focus:outline-none text-gray-700 font-medium bg-transparent cursor-pointer">
+            <input type="text" name="check_out" id="check-out" value="{{ request('check_out') }}" placeholder="Выберите дату" class="w-full focus:outline-none text-gray-700 font-medium bg-transparent cursor-pointer">
         </div>
-        <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl font-semibold transition-all active:scale-95">
+
+        <div class="flex-1 px-4 py-2 text-left">
+            <label class="block text-xs font-semibold text-gray-400 uppercase">Гости</label>
+            <select name="guests" class="w-full focus:outline-none text-gray-700 font-medium cursor-pointer bg-transparent">
+                <option value="">Все</option>
+                <option value="1" {{ request('guests') == '1' ? 'selected' : '' }}>1 гость</option>
+                <option value="2" {{ request('guests') == '2' ? 'selected' : '' }}>2 гостя</option>
+                <option value="3" {{ request('guests') == '3' ? 'selected' : '' }}>3-4 гостя</option>
+                <option value="5" {{ request('guests') == '5' ? 'selected' : '' }}>5+ гостей</option>
+            </select>
+        </div>
+
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl font-semibold transition-all active:scale-95">
             Найти
         </button>
-    </div>
+    </form>
+
 </section>
 
 <!-- МОДЕРНАЯ ПАНЕЛЬ ФИЛЬТРОВ (Появляется под Hero-секцией) -->
@@ -126,7 +140,7 @@
 </section>
 
 <!-- Инициализация Flatpickr -->
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         flatpickr("#check-in", {
             dateFormat: "d.m.Y",
@@ -137,5 +151,19 @@
             allowInput: true
         });
     });
+</script> -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const config = {
+            altInput: true, // Создает второй, "красивый" инпут для пользователя
+            altFormat: "d.m.Y", // Формат, который видит пользователь (04.11.2026)
+            dateFormat: "Y-m-d", // Формат, который реально отправляется на сервер (2026-11-04)
+            allowInput: true,
+        };
+
+        flatpickr("#check-in", config);
+        flatpickr("#check-out", config);
+    });
 </script>
+
 @endsection
