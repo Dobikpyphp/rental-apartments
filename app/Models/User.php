@@ -57,4 +57,22 @@ class User extends Authenticatable
     {
         return $this->hasOne(Guest::class);
     }
+
+    // Проверка: является ли пользователь администратором (или выше)
+    public function isAdmin()
+    {
+        return in_array($this->role, ['admin', 'superadmin']);
+    }
+
+    // Проверка: является ли пользователь супер-админом
+    public function isSuperAdmin()
+    {
+        return $this->role === 'superadmin';
+    }
+
+    // Проверка: является ли пользователь обычным гостем
+    public function isGuest()
+    {
+        return $this->role === 'guest';
+    }
 }

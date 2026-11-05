@@ -21,16 +21,17 @@
                         {{ __('Каталог') }}
                     </x-nav-link>
 
-                    <!-- ДОБАВЛЕНО: Ссылка на мои бронирования (только для авторизованных) -->
+                    <!-- Ссылка на мои бронирования (только для авторизованных) -->
                     @auth
                     <x-nav-link :href="route('my.bookings')" :active="request()->routeIs('my.bookings')">
                         {{ __('Мои брони') }}
                     </x-nav-link>
                     @endauth
 
-                    <!-- Ссылки для админа (только если пользователь авторизован) -->
+                    <!-- ПРАВКА ТУТ: Ссылки для админа (только если пользователь ИМЕЕТ РОЛЬ админа) -->
                     @auth
-                    <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.*')">
+                    @if(Auth::user()->isAdmin())
+                    <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.*')"> <!--:href="..." - (с двоеточием) всё, что внутри, воспринимается как PHP-код.-->
                         {{ __('Управление') }}
                     </x-nav-link>
 
@@ -40,6 +41,7 @@
                     <x-nav-link :href="route('admin.bookings.index')" :active="request()->routeIs('admin.bookings.*')">
                         {{ __('В список бронирований') }}
                     </x-nav-link>
+                    @endif
                     @endauth
 
                 </div>
@@ -53,7 +55,6 @@
                             @auth
                             <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                             @endauth
-
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -71,10 +72,8 @@
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
                             <x-dropdown-link :href="route('logout')"
-                                onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                                onclick="event.preventDefault(); this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
@@ -101,11 +100,25 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            <!-- ДОБАВЛЕНО: Ссылка в мобильное меню -->
             @auth
             <x-responsive-nav-link :href="route('my.bookings')" :active="request()->routeIs('my.bookings')">
                 {{ __('Мои брони') }}
             </x-responsive-nav-link>
+            @endauth
+
+            <!-- ДОБАВЛЕНО: Ссылки для админа в мобильное меню -->
+            @auth
+            @if(Auth::user()->isAdmin())
+            <x-responsive-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.*')">
+                {{ __('Управление') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.create')" :active="request()->routeIs('admin.create')">
+                {{ __('Добавить квартиру') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.bookings.index')" :active="request()->routeIs('admin.bookings.*')">
+                {{ __('В список бронирований') }}
+            </x-responsive-nav-link>
+            @endif
             @endauth
         </div>
 
@@ -121,13 +134,10 @@
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 
-                <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                        onclick="event.preventDefault(); this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>

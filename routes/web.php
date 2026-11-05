@@ -75,7 +75,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
        ПАНЕЛЬ АДМИНИСТРАТОРА 
        Здесь мы управляем квартирами
     */
-    Route::prefix('admin')->name('admin.')->group(function () {
+    // ТОЛЬКО для суперадмина (например, управление другими админами)
+    Route::middleware(['auth', 'role:superadmin'])->group(function () {
+        Route::get('/super-settings', [AdminController::class, 'superSettings'])->name('super.settings');
+    });
+    // Только для админов и суперадминов
+    Route::middleware(['auth', 'role:admin,superadmin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::get('/create', [AdminController::class, 'create'])->name('create');
         Route::post('/store', [AdminController::class, 'store'])->name('store');

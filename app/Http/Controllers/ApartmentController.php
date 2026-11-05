@@ -26,6 +26,7 @@ class ApartmentController extends Controller
             //Зачем: Чтобы в шаблоне Blade, когда ты пишешь $apt->images, Laravel не бегал в базу за каждой картинкой отдельно, а взял их из уже готового списка в памяти.
             ->where('active', true) //Что делает: Добавляет в SQL-запрос условие WHERE active = 1. Зачем: Чтобы на сайт не попали квартиры, которые владелец временно скрыл (выключил).
             // --- НОВАЯ ЛОГИКА: Фильтр по доступности дат ---
+            //$request->filled('check_in') — возвращает true, только если поле есть в запросе И оно не пустое. Метод filled() умеет принимать не только одну строку, но и массив полей.
             ->when($request->filled(['check_in', 'check_out']), function ($query) use ($request) {
                 $checkIn = $request->check_in;
                 $checkOut = $request->check_out;

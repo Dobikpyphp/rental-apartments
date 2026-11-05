@@ -10,10 +10,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        // Добавляем псевдоним для нашего посредника
+    ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'is_admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

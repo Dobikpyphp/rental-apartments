@@ -138,32 +138,19 @@
         @endforelse
     </div>
 </section>
-
-<!-- Инициализация Flatpickr -->
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        flatpickr("#check-in", {
-            dateFormat: "d.m.Y",
-            allowInput: true
-        });
-        flatpickr("#check-out", {
-            dateFormat: "d.m.Y",
-            allowInput: true
-        });
-    });
-</script> -->
+@endsection
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const config = {
             altInput: true, // Создает второй, "красивый" инпут для пользователя
-            altFormat: "d.m.Y", // Формат, который видит пользователь (04.11.2026)
-            dateFormat: "Y-m-d", // Формат, который реально отправляется на сервер (2026-11-04)
-            allowInput: true,
+            altFormat: "d.m.Y", // Формат, который видит пользователь (04.11.2026), altFormat работает только если altInput установлен в true. Он отвечает за то, что видит пользователь в том самом «виртуальном» поле.
+            dateFormat: "Y-m-d", // Формат, который реально отправляется на сервер (2026-11-04), значение , которое будет записано в твой настоящий (скрытый) инпут. Именно это значение будет отправлено в контроллер Laravel при нажатии кнопки «Найти»
+            allowInput: true, //По умолчанию Flatpickr часто блокирует возможность печатать в поле с клавиатуры, заставляя пользователя выбирать дату только из выпадающего календаря.
         };
 
         flatpickr("#check-in", config);
         flatpickr("#check-out", config);
     });
 </script>
-
-@endsection
+@endpush
