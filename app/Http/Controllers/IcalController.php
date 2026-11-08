@@ -14,7 +14,7 @@ class IcalController extends Controller
     {
         $apartment = Apartment::findOrFail($apartmentId);
         $url = $apartment->ical_url;
-
+        // dd($url);
         if (!$url) {
             return back()->with('error', 'Ссылка на iCal не указана для этой квартиры!');
         }

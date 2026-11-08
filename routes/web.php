@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\IcalController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -70,6 +71,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('my.bookings');
     // Отмена брони гостем
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+    //Создание отзыва от гостя
+    Route::post('/apartments/{apartment}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
     /* 
        ПАНЕЛЬ АДМИНИСТРАТОРА 

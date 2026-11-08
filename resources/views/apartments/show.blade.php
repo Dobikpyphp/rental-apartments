@@ -40,7 +40,13 @@
         <!-- Инфо-блок -->
         <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-start mb-6">
-                <h1 class="text-3xl font-extrabold text-gray-900">{{ $apartment->title }}</h1>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-3xl font-extrabold text-gray-900">{{ $apartment->title }}</h1>
+                    <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-sm font-bold">
+                        ⭐ {{ $apartment->averageRating() ?? 'Нет оценок' }}
+                    </span>
+                </div>
+
                 <span class="bg-blue-50 text-blue-600 text-sm font-semibold px-3 py-1 rounded-full">
                     {{ $apartment->rooms }} комн.
                 </span>
@@ -60,7 +66,6 @@
                     @if($apartment->has_wifi) <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm border border-gray-200">📶 Wi-Fi</span> @endif
                     @if($apartment->has_tv) <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm border border-gray-200">📺 Телевизор</span> @endif
                     @if($apartment->has_microwave) <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm border border-//gray-200">🍲 Микроволновка</span> @endif
-                    @if($apartment->has_ac) <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm border border-gray-200">❄️ Кондиционер</span> @endif
                 </div>
             </div>
 
@@ -69,6 +74,50 @@
                 <p class="text-gray-600 leading-relaxed">
                     {{ $apartment->description }}
                 </p>
+            </div>
+        </div>
+        <!-- СЕКЦИЯ ОТЗЫВОВ -->
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mt-8">
+            <h3 class="text-2xl font-bold mb-6 text-gray-900">Отзывы гостей</h3>
+
+            <!-- Список отзывов -->
+            <div class="space-y-6 mb-10">
+                @forelse($apartment->reviews as $review)
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-bold text-gray-800">{{ $review->user->name }}</span>
+                        <span class="text-yellow-500 font-bold">⭐ {{ $review->rating }}</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">{{ $review->comment }}</p>
+                    <span class="text-xs text-gray-400 block mt-2">{{ $review->created_at->format('d.m.Y') }}</span>
+                </div>
+                @empty
+                <p class="text-gray-500 italic">Пока отзывов нет. Станьте первым!</p>
+                @endforelse
+            </div>
+
+            <!-- Форма добавления отзыва -->
+            <div class="pt-6 border-t border-gray-100">
+                <h4 class="font-bold mb-4 text-gray-800">Оставить отзыв</h4>
+                <form action="{{ route('reviews.store', $apartment->id) }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div class="flex gap-4 items-center">
+                        <label class="text-sm text-gray-600">Оценка:</label>
+                        <select name="rating" class="border rounded-lg p-2 text-sm focus:ring-indigo-500">
+                            <option value="5">5 - Отлично</option>
+                            <option value="4">4 - Хорошо</option>
+                            <optionC value="3">3 - Нормально</option>
+                                <option value="2">2 - Плохо</option>
+                                <option value="1">1 - Ужасно</option>
+                        </select>
+                    </div>
+                    <div>
+                        <textarea name="comment" rows="3" class="w-full border rounded-xl p-3 text-sm focus:ring-indigo-500" placeholder="Расскажите о вашем пребывании..."></textarea>
+                    </div>
+                    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-semibold hover:bg-indigo-700 transition">
+                        Отправить отзыв
+                    </button>
+                </form>
             </div>
         </div>
     </div>
