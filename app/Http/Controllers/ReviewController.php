@@ -23,11 +23,21 @@ class ReviewController extends Controller
         // Если у вас пока нет статуса 'completed', можно использовать 'confirmed'
         $hasStayed = Booking::where('user_id', $userId)
             ->where('apartment_id', $apartmentId)
-            ->where('status', 'confirmed') // Или 'completed', если добавите такой статус
+            ->whereIn('status', ['confirmed', 'completed']) // Разрешаем оставить отзыв и тем, кто сейчас живет, и тем, кто уже выехал
             ->exists();
 
         if (!$hasStayed) {
             return back()->with('error', 'Вы можете оставить отзыв только после того, как проживете в этой квартире!');
+        }
+
+
+        // 2. НОВАЯ ПРОВЕРКА: Не оставлял ли он отзыв ранее?
+        $alreadyReviewed = Review::where('user_id', $userId)
+            ->where('apartment_id', $apartmentId)
+            ->exists();
+
+        if ($alreadyReviewed) {
+            return back()->with('error', 'Вы уже оставили отзыв об этой квартире. Повторный отзыв невозможен!');
         }
 
         Review::create([
@@ -38,5 +48,11 @@ class ReviewController extends Controller
         ]);
 
         return back()->with('success', 'Спасибо за ваш отзыв!');
+    }
+
+    public function destroy(Review $review)
+    {
+        $review->delete();
+        return back()->with('success', 'Отзыв был удален.');
     }
 }

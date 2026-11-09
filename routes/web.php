@@ -67,6 +67,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    //Удаление отзыва
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
     // Страница моих бронирований для гостя
     Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('my.bookings');
     // Отмена брони гостем
@@ -91,7 +94,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('destroy');
 
         Route::get('/ical/import/{apartment}', [IcalController::class, 'import'])->name('ical.import');
-
 
         // Редактирование квартиры
         Route::get('/apartments/{id}/edit', [AdminController::class, 'edit'])->name('apartments.edit');

@@ -46,8 +46,10 @@
                         <select name="status" class="text-xs border rounded p-1">
                             <option value="pending" {{ $booking->status == 'pending' ? 'selected' : '' }}>Ожидает</option>
                             <option value="confirmed" {{ $booking->status == 'confirmed' ? 'selected' : '' }}>Подтвердить</option>
+                            <option value="completed" {{ $booking->status == 'completed' ? 'selected' : '' }}>Завершено (Выехали)</option>
                             <option value="cancelled" {{ $booking->status == 'cancelled' ? 'selected' : '' }}>Отменить</option>
                         </select>
+
                         <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">OK</button>
                     </form>
                 </td>

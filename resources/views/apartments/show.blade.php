@@ -81,36 +81,49 @@
             <h3 class="text-2xl font-bold mb-6 text-gray-900">Отзывы гостей</h3>
 
             <!-- Список отзывов -->
-            <div class="space-y-6 mb-10">
-                @forelse($apartment->reviews as $review)
-                <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="font-bold text-gray-800">{{ $review->user->name }}</span>
+            @foreach($apartment->reviews as $review)
+            <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 relative group">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-bold text-gray-800">{{ $review->user->name }}</span>
+                    <div class="flex items-center gap-2">
                         <span class="text-yellow-500 font-bold">⭐ {{ $review->rating }}</span>
-                    </div>
-                    <p class="text-gray-600 text-sm">{{ $review->comment }}</p>
-                    <span class="text-xs text-gray-400 block mt-2">{{ $review->created_at->format('d.m.Y') }}</span>
-                </div>
-                @empty
-                <p class="text-gray-500 italic">Пока отзывов нет. Станьте первым!</p>
-                @endforelse
-            </div>
 
+                        <!-- КНОПКА УДАЛЕНИЯ (только для админа) -->
+                        @if(Auth::user() && Auth::user()->isAdmin())
+                        <form action="{{ route('reviews.destroy', $review->id) }}" method="POST" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-400 hover:text-red-600 text-xs opacity-0 group-hover:opacity-100 transition" onclick="return confirm('Удалить этот отзыв?')">
+                                Удалить
+                            </button>
+                        </form>
+                        @endif
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm">{{ $review->comment }}</p>
+            </div>
+            @endforeach
             <!-- Форма добавления отзыва -->
             <div class="pt-6 border-t border-gray-100">
                 <h4 class="font-bold mb-4 text-gray-800">Оставить отзыв</h4>
                 <form action="{{ route('reviews.store', $apartment->id) }}" method="POST" class="space-y-4">
                     @csrf
-                    <div class="flex gap-4 items-center">
-                        <label class="text-sm text-gray-600">Оценка:</label>
-                        <select name="rating" class="border rounded-lg p-2 text-sm focus:ring-indigo-500">
-                            <option value="5">5 - Отлично</option>
-                            <option value="4">4 - Хорошо</option>
-                            <optionC value="3">3 - Нормально</option>
-                                <option value="2">2 - Плохо</option>
-                                <option value="1">1 - Ужасно</option>
-                        </select>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ваша оценка:</label>
+                        <div class="flex items-center gap-2" id="star-rating">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <button type="button"
+                                data-value="{{ $i }}"
+                                class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors focus:outline-none"
+                                onclick="setRating({{ $i }})">
+                                ★
+                                </button>
+                                @endfor
+                        </div>
+                        <!-- Скрытое поле, которое реально отправится в контроллер -->
+                        <input type="hidden" name="rating" id="rating-value" required>
                     </div>
+
                     <div>
                         <textarea name="comment" rows="3" class="w-full border rounded-xl p-3 text-sm focus:ring-indigo-500" placeholder="Расскажите о вашем пребывании..."></textarea>
                     </div>
@@ -232,5 +245,22 @@
             }
         }
     });
+
+    function setRating(value) {
+        // 1. Записываем значение в скрытое поле
+        document.getElementById('rating-value').value = value;
+
+        // 2. Подсвечиваем звезды
+        const stars = document.querySelectorAll('.star-btn');
+        stars.forEach((star, index) => {
+            if (index < value) {
+                star.classList.remove('text-gray-300');
+                star.classList.add('text-yellow-400');
+            } else {
+                star.classList.remove('text-yellow-400');
+                star.classList.add('text-gray-300');
+            }
+        });
+    }
 </script>
 @endpush
