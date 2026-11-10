@@ -114,6 +114,10 @@ class AdminController extends Controller
 
     public function updateBookingStatus(Request $request, int $id)
     {
+        $request->validate([
+            'status' => 'required|in:pending,confirmed,cancelled,completed',
+        ]);
+
         $booking = Booking::findOrFail($id);
 
         // Обновляем статус из того, что пришло из формы
@@ -135,6 +139,11 @@ class AdminController extends Controller
     public function deleteImage(int $id)
     {
         $image = Image::findOrFail($id);
+
+        // ✅ Проверяем, что изображение привязано к квартире
+        if (!$image->apartment) {
+            return back()->with('error', 'Изображение не найдено или уже удалено.');
+        }
 
         // 1. Удаляем физический файл с диска
         Storage::disk('public')->delete($image->path);
