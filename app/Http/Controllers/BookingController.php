@@ -9,6 +9,7 @@ use App\Jobs\SendTelegramNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -21,77 +22,87 @@ class BookingController extends Controller
             'check_out'   => 'required|date|after:check_in', // Дата выезда строго после заезда
         ]);
 
-        // СОЗДАЕМ переменную $apartment (добываем её из базы по ID из формы)
-        $apartment = Apartment::findOrFail($request->apartment_id);
 
-        // 2. Вытаскиваем данные из валидации в переменные (для удобства)
-        $apartmentId = $validated['apartment_id'];
-        $checkIn     = $validated['check_in'];
-        $checkOut    = $validated['check_out'];
-
-        // 3. ПРОВЕРКА ПЕРЕСЕЧЕНИЯ (тот самый алгоритм)
-        $exists = Booking::where('apartment_id', $apartmentId) // Ищем брони этой квартиры
-            ->where(function ($query) use ($checkIn, $checkOut) {
-                // Сравнение: дата из базы < дата выезда пользователя И дата из базы > дата заезда пользователя
-                $query->where('check_in', '<', $checkOut)
-                    ->where('check_out', '>', $checkIn);
-            })
-            ->exists(); // Возвращает true, если нашли хотя бы одно пересечение
-
-        // dd($sql);
-
-        if ($exists) {
-            // Если пересечение найдено, возвращаем назад с ошибкой
-            return redirect()->back()
-                ->withInput() // Чтобы пользователь не вводил всё заново
-                ->with('error', 'Извините, квартира занята на выбранные даты!');
+        // 2. Проверка авторизации (до транзакции, чтобы не блокировать зря)
+        if (!Auth::check()) {
+            return redirect()->route('login')
+                ->with('error', 'Пожалуйста, войдите в систему, чтобы забронировать квартиру.');
         }
 
         $user = Auth::user(); // Получаем объект пользователя
 
-        if (!$user) {
-            // Если пользователь не авторизован, перенаправляем на логин 
-            // или можно создать "анонимного" гостя.
-            return redirect()->route('login')->with('error', 'Пожалуйста, войдите в систему, чтобы забронировать квартиру.');
+        try {
+            // 3. Всё, что меняет данные, оборачиваем в транзакцию
+            $booking = DB::transaction(
+                function () use ($validated, $user) {
+                    // 3.1. Блокируем строку квартиры. Теперь другие запросы будут ждать.
+                    $apartment = Apartment::where('id', $validated['apartment_id'])
+                        ->lockForUpdate()
+                        ->firstOrFail();
+
+                    $checkIn = $validated['check_in'];
+                    $checkOut = $validated['check_out'];
+                    // 3.2. Проверяем пересечение дат (теперь это безопасно)
+                    $exists = Booking::where('apartment_id', $apartment->id)
+                        ->where('status', '!=', 'cancelled')
+                        ->where(function ($query) use ($checkIn, $checkOut) {
+                            $query->where('check_in', '<', $checkOut)
+                                ->where('check_out', '>', $checkIn);
+                        })
+                        ->exists();
+
+                    if ($exists) {
+                        // Бросаем исключение, чтобы транзакция откатилась
+                        throw new \Exception('Квартира занята на выбранные даты!');
+                    }
+
+                    // 1. Проверяем, есть ли у этого пользователя профиль гостя
+                    $guest = $user->guest; // Используем связь, которую создали в модели User
+
+                    if (!$guest) {
+                        $guest = Guest::create([
+                            // Если $user->name пустой, запишем 'Гость'
+                            'user_id'   => $user->id, // Привязываем гостя к юзеру!
+                            'full_name' => $user->name ?? 'Гость без имени',
+                            'email'     => $user->email ?? null,
+                            'phone'     => null,
+                            'rating'    => 5,
+                        ]);
+                    }
+
+                    // 4. РАСЧЕТ СТОИМНОСТИ
+                    // Считаем разницу в днях с помощью Carbon
+                    $startDate = Carbon::parse($checkIn);
+                    $endDate = Carbon::parse($checkOut);
+                    $nights = $startDate->diffInDays($endDate);
+                    $totalPrice = $nights * $apartment->price_per_night;
+
+                    // Если мы дошли сюда — значит квартира свободна! 
+
+                    // 3.5. Создаем бронирование
+                    return Booking::create([
+                        'apartment_id' => $apartment->id,
+                        'user_id'      => $user->id,
+                        'guest_id'     => $guest->id,
+                        'check_in'     => $checkIn,
+                        'check_out'    => $checkOut,
+                        'total_price'  => $totalPrice,
+                        'status'       => 'pending',
+                    ]);
+                }
+            );
+
+            // 4. Отправляем уведомление (вне транзакции, чтобы не блокировать)
+            SendTelegramNotification::dispatch($booking->apartment, $booking);
+
+            return redirect()->route('apartments.index')
+                ->with('success', 'Заявка на бронирование отправлена!');
+        } catch (\Exception $e) {
+            // 5. Ловим исключение (включая наше "Квартира занята")
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $e->getMessage());
         }
-
-        // 1. Проверяем, есть ли у этого пользователя профиль гостя
-        $guest = $user->guest; // Используем связь, которую создали в модели User
-
-        if (!$guest) {
-            $guest = Guest::create([
-                // Если $user->name пустой, запишем 'Гость'
-                'user_id'   => $user->id, // Привязываем гостя к юзеру!
-                'full_name' => $user->name ?? 'Гость без имени',
-                'email'     => $user->email ?? null,
-                'phone'     => null,
-                'rating'    => 5,
-            ]);
-        }
-
-        // 4. РАСЧЕТ СТОИМНОСТИ
-        // Считаем разницу в днях с помощью Carbon
-        $startDate = Carbon::parse($checkIn);
-        $endDate = Carbon::parse($checkOut);
-        $nights = $startDate->diffInDays($endDate);
-        $totalPrice = $nights * $apartment->price_per_night;
-
-        // Если мы дошли сюда — значит квартира свободна! 
-
-        // 3. Теперь создаем бронирование, привязывая его к профилю ГОСТЯ
-        $booking = Booking::create([
-            'apartment_id' => $apartmentId,
-            'user_id'      => $user->id,
-            'guest_id'     => $guest->id, // ТЕПЕРЬ ПРИВЯЗАНО!
-            'check_in'     => $checkIn,
-            'check_out'    => $checkOut,
-            'total_price'  => $totalPrice,
-            'status'       => 'pending',
-        ]);
-
-        SendTelegramNotification::dispatch($apartment, $booking);
-
-        return redirect()->route('apartments.index')->with('success', 'Заявка на бронирование отправлена!');
     }
 
     public function myBookings()
