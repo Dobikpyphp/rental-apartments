@@ -72,6 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Страница моих бронирований для гостя
     Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('my.bookings');
+    Route::post('/bookings/{booking}/pay', [BookingController::class, 'pay'])->name('bookings.pay');
     // Отмена брони гостем
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     //Создание отзыва от гостя

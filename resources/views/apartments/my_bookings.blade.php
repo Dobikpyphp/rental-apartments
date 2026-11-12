@@ -50,17 +50,25 @@
             </div>
 
             @if($booking->status == 'pending')
-            <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST">
-                @csrf
-                @method('PATCH')
-                <button type="submit" class="w-full py-2 text-sm text-red-500 font-medium hover:bg-red-50 rounded-lg transition" onclick="return confirm('Вы уверены, что хотите отменить заявку?')">
-                    Отменить бронирование
-                </button>
-            </form>
-            @endif
+            <div class="flex gap-2 mt-2">
+                <!-- Кнопка оплаты -->
+                <form action="{{ route('bookings.pay', $booking->id) }}" method="POST" class="flex-1">
+                    @csrf
+                    <button type="submit" class="w-full py-2 text-sm bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">
+                        Оплатить
+                    </button>
+                </form>
+                <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="w-full py-2 text-sm text-red-500 font-medium hover:bg-red-50 rounded-lg transition" onclick="return confirm('Вы уверены, что хотите отменить заявку?')">
+                        Отменить бронирование
+                    </button>
+                </form>
+                @endif
+            </div>
         </div>
+        @endforeach
     </div>
-    @endforeach
-</div>
-@endif
-@endsection
+    @endif
+    @endsection

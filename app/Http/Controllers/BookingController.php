@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Guest;
 use App\Models\Apartment;
+use App\Services\PaymentService;
 use App\Jobs\SendTelegramNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -131,5 +132,24 @@ class BookingController extends Controller
         $booking->update(['status' => 'cancelled']);
 
         return back()->with('success', 'Ваша заявка была отменена.');
+    }
+
+    public function pay(Booking $booking, PaymentService $paymentService)
+    {
+        // 1. Проверяем, что бронь принадлежит текущему пользователю
+        if ($booking->user_id !== Auth::id()) {
+            return back()->with('error', 'Вы не можете оплатить чужую бронь!');
+        }
+
+        // 2. Проверяем, что бронь ещё не оплачена
+        if ($booking->status !== 'pending') {
+            return back()->with('error', 'Эта бронь уже оплачена или отменена.');
+        }
+
+        // 3. Вызываем сервис (симуляцию)
+        $redirectUrl = $paymentService->createPayment($booking);
+
+        // 4. Редиректим пользователя (в симуляции — сразу на "успех")
+        return redirect($redirectUrl)->with('success', 'Оплата прошла успешно (симуляция)!');
     }
 }
