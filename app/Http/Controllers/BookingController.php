@@ -11,11 +11,16 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Exceptions\ApartmentNotAvailableException;
+// use App\Exceptions\BookingFailedException;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
     public function store(Request $request)
     {
+        // Log::info('Booking store called', ['data' => $request->all()]);
+        // throw new \Exception('Тестовая ошибка');
         // 1. Валидация
         $validated = $request->validate([
             'apartment_id' => 'required|integer|exists:apartments,id', // exists проверяет, есть ли такая квартира в БД
@@ -52,9 +57,9 @@ class BookingController extends Controller
                         })
                         ->exists();
 
+                    // Бросаем исключение, чтобы транзакция откатилась
                     if ($exists) {
-                        // Бросаем исключение, чтобы транзакция откатилась
-                        throw new \Exception('Квартира занята на выбранные даты!');
+                        throw new ApartmentNotAvailableException();
                     }
 
                     // 1. Проверяем, есть ли у этого пользователя профиль гостя
@@ -98,11 +103,21 @@ class BookingController extends Controller
 
             return redirect()->route('apartments.index')
                 ->with('success', 'Заявка на бронирование отправлена!');
-        } catch (\Exception $e) {
-            // 5. Ловим исключение (включая наше "Квартира занята")
+        } catch (ApartmentNotAvailableException $e) {
+            // Понятная ошибка для пользователя
             return redirect()->back()
                 ->withInput()
                 ->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            // Логируем всё остальное
+            Log::error('Booking failed: ' . $e->getMessage(), [
+                'user_id' => $user->id,
+                'apartment_id' => $validated['apartment_id'] ?? null,
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Произошла ошибка при создании брони. Попробуйте позже.');
         }
     }
 
