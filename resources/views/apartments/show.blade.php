@@ -188,7 +188,7 @@
             minDate: "today",
             dateFormat: "Y-m-d",
             // Блокируем даты
-            // Здесь мы создаем массив всех дат из интервалов’
+            // Здесь мы создаем массив всех дат из интервалов
             disable: blockedDates.flatMap(range => {
                 let start = new Date(range.start);
                 let end = new Date(range.end);

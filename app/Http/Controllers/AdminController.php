@@ -22,6 +22,17 @@ class AdminController extends Controller
         return view('admin.apartments.edit', compact('apartment'));
     }
 
+    private function handleImages(Apartment $apartment, array $images): void
+    {
+        foreach ($images as $image) {
+            $path = $image->store('apartments', 'public');
+            Image::create([
+                'path' => $path,
+                'apartment_id' => $apartment->id,
+            ]);
+        }
+    }
+
     public function update(Request $request, int $id)
     {
         $apartment = Apartment::findOrFail($id);
@@ -50,13 +61,7 @@ class AdminController extends Controller
 
         // --- ЛОГИКА ДОБАВЛЕНИЯ НОВЫХ ФОТО ---
         if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('apartments', 'public');
-                Image::create([
-                    'path' => $path,
-                    'apartment_id' => $apartment->id,
-                ]);
-            }
+            $this->handleImages($apartment, $request->file('images'));
         }
 
         return redirect()->route('admin.index')->with('success', 'Данные квартиры и фото обновлены!');
@@ -84,16 +89,9 @@ class AdminController extends Controller
 
         $apartment = Apartment::create($validated);
         if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                // Сохраняем файл на диск
-                $path = $image->store('apartments', 'public');
-                // Сохраняем путь в базу
-                Image::create([
-                    'path' => $path,
-                    'apartment_id' => $apartment->id,
-                ]);
-            }
+            $this->handleImages($apartment, $request->file('images'));
         }
+
         return redirect()->route('admin.index')->with('success', 'Данные сохранены успешно!');
     }
 

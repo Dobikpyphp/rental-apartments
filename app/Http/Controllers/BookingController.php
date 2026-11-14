@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Guest;
 use App\Models\Apartment;
+use App\Models\User;
 use App\Services\PaymentService;
 use App\Jobs\SendTelegramNotification;
 use Carbon\Carbon;
@@ -63,25 +64,9 @@ class BookingController extends Controller
                     }
 
                     // 1. Проверяем, есть ли у этого пользователя профиль гостя
-                    $guest = $user->guest; // Используем связь, которую создали в модели User
+                    $guest = $this->getOrCreateGuest($user);
 
-                    if (!$guest) {
-                        $guest = Guest::create([
-                            // Если $user->name пустой, запишем 'Гость'
-                            'user_id'   => $user->id, // Привязываем гостя к юзеру!
-                            'full_name' => $user->name ?? 'Гость без имени',
-                            'email'     => $user->email ?? null,
-                            'phone'     => null,
-                            'rating'    => 5,
-                        ]);
-                    }
-
-                    // 4. РАСЧЕТ СТОИМНОСТИ
-                    // Считаем разницу в днях с помощью Carbon
-                    $startDate = Carbon::parse($checkIn);
-                    $endDate = Carbon::parse($checkOut);
-                    $nights = $startDate->diffInDays($endDate);
-                    $totalPrice = $nights * $apartment->price_per_night;
+                    $totalPrice = $this->calculateTotalPrice($checkIn, $checkOut, $apartment->price_per_night);
 
                     // Если мы дошли сюда — значит квартира свободна! 
 
@@ -119,6 +104,34 @@ class BookingController extends Controller
                 ->withInput()
                 ->with('error', 'Произошла ошибка при создании брони. Попробуйте позже.');
         }
+    }
+
+    private function getOrCreateGuest(User $user): Guest
+    {
+        $guest = $user->guest;
+
+        if (!$guest) {
+            $guest = Guest::create([
+                'user_id'   => $user->id,
+                'full_name' => $user->name ?? 'Гость без имени',
+                'email'     => $user->email ?? null,
+                'phone'     => null,
+                'rating'    => 5,
+            ]);
+        }
+
+        return $guest;
+    }
+
+    private function calculateTotalPrice(string $checkIn, string $checkOut, float $pricePerNight): float
+    {
+        // 4. РАСЧЕТ СТОИМНОСТИ
+        // Считаем разницу в днях с помощью Carbon
+        $startDate = Carbon::parse($checkIn);
+        $endDate = Carbon::parse($checkOut);
+        $nights = $startDate->diffInDays($endDate);
+
+        return $nights * $pricePerNight;
     }
 
     public function myBookings()
