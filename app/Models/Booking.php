@@ -19,6 +19,8 @@ class Booking extends Model
         'status',
         'payment_id',
         'uid',
+        'source',
+        'external_id',
     ];
 
     public function apartment()

@@ -12,6 +12,7 @@
         <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
                 <th class="p-4 font-semibold text-gray-600">Гость</th>
+                <th class="p-4 font-semibold text-gray-600">Источник</th>
                 <th class="p-4 font-semibold text-gray-600">Квартира</th>
                 <th class="p-4 font-semibold text-gray-600">Даты</th>
                 <th class="p-4 font-semibold text-gray-600">Сумма</th>
@@ -27,6 +28,14 @@
                     <div class="font-medium">{{ $booking->user->name ?? 'Не зарегистрирован' }}</div>
                     <div class="text-xs text-gray-500">{{ $booking->user->email ?? 'Нет email' }}</div>
                 </td>
+                <td>
+                    @if($booking->source === 'realty_calendar')
+                    <span class="text-blue-600">RealtyCalendar</span>
+                    @else
+                    <span class="text-gray-600">Сайт</span>
+                    @endif
+                </td>
+
                 <td class="p-4 text-gray-700">{{ $booking->apartment->title }}</td>
                 <td class="p-4 text-sm text-gray-600">
                     {{ $booking->check_in }} -> {{ $booking->check_out }}

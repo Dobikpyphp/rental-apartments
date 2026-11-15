@@ -17,7 +17,9 @@ return Application::configure(basePath: dirname(__DIR__)) //Создаёт пр�
         ]);
 
         // CSRF-исключения (если нужно)
-        // $middleware->validateCsrfTokens(except: ['api/*']);
+        $middleware->validateCsrfTokens(except: [
+            'webhook/realty-calendar',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Обработка 403 — редирект в каталог с сообщением

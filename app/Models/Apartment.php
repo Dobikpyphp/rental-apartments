@@ -22,6 +22,7 @@ class Apartment extends Model
         'has_microwave',
         'has_tv',
         'ical_url',
+        'realty_calendar_id',
     ];
 
     public function images()

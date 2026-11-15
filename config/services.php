@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'realty_calendar' => [
+        'webhook_secret' => env('REALTY_CALENDAR_WEBHOOK_SECRET'),
+    ],
+
 ];

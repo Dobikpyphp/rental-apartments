@@ -7,6 +7,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\IcalController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\RealtyCalendarWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,8 @@ Route::get('/apartments/{id}', [ApartmentController::class, 'show'])->name('apar
 // Маршрут для экспорта календаря (публичный)
 Route::get('/ical/apartment/{apartment}', [ApartmentController::class, 'exportIcal'])->name('apartments.ical');
 
+Route::post('/webhook/realty-calendar', [RealtyCalendarWebhookController::class, 'handle'])
+    ->name('webhook.realty-calendar');
 
 Route::get('/fake-ical-service', function () {
     $content = "BEGIN:VCALENDAR\r\n";
