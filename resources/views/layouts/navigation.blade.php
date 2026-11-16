@@ -41,6 +41,9 @@
                     <x-nav-link :href="route('admin.bookings.index')" :active="request()->routeIs('admin.bookings.*')">
                         {{ __('В список бронирований') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.guests.index')" :active="request()->routeIs('admin.guests.*')">
+                        {{ __('В список гостей') }}
+                    </x-nav-link>
                     @endif
                     @endauth
 

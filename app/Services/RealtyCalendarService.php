@@ -6,10 +6,13 @@ use App\Models\Apartment;
 use App\Models\Booking;
 use App\Models\Guest;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\DB;
 
 class RealtyCalendarService
 {
+    /**
+     * Главный метод: обрабатывает входящий Webhook
+     */
     public function handleWebhook(array $payload): void
     {
         // 1. Проверяем, что это бронирование
@@ -57,6 +60,9 @@ class RealtyCalendarService
 
     private function findOrCreateGuest(array $data): Guest
     {
+        /**
+         * Находит или создаёт гостя
+         */
         $phone = $data['guest_phone'] ?? null;
         $email = $data['guest_email'] ?? null;
 
@@ -80,6 +86,9 @@ class RealtyCalendarService
         ]);
     }
 
+    /**
+     * Преобразует статус из RealtyCalendar в ваш статус
+     */
     private function mapStatus(string $status): string
     {
         return match ($status) {
